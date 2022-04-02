@@ -113,6 +113,42 @@ export const sendMessageService = async (refreshToken, roomId, text) => {
     return message
 }
 
+export const editMessageService = async (roomId, messageId, refreshToken, text) => {
+    if (!refreshToken) throw new Error('Токен не існує')
+    if (!roomId && !messageId && !text) throw new Error('Дані не можуть бути порожні')
+
+    const {id} = await validateRefreshToken(refreshToken)
+    if (!id) throw new Error('Помилка авторизації')
+
+    const message = await MessageSchema.findOne({_id: messageId, room: roomId})
+    if (!message) throw new Error('Повідомлення не знайдено')
+
+    if (message.user.toString() !== id) throw new Error('Ви не можете редагувати чуже повідомлення')
+
+    const editMessage = await MessageSchema.updateOne({_id: messageId, room: roomId, user: id}, {
+        text
+    })
+
+    return editMessage
+}
+
+export const deleteMessageService = async (roomId, messageId, refreshToken) => {
+    if (!refreshToken) throw new Error('Токен не існує')
+    if (!roomId && !messageId) throw new Error('Дані не можуть бути порожні')
+
+    const {id} = await validateRefreshToken(refreshToken)
+    if (!id) throw new Error('Помилка авторизації')
+
+    const message = await MessageSchema.findOne({_id: messageId, room: roomId})
+    if (!message) throw new Error('Повідомлення не знайдено')
+
+    if (message.user.toString() !== id) throw new Error('Ви не можете видалити чуже повідомлення')
+
+    const deleteMessage = await MessageSchema.deleteOne({_id: messageId, room: roomId, user: id})
+
+    return deleteMessage
+}
+
 export const getMessagesService = async (roomId) => {
     if (!roomId) throw new Error('Дані не можуть бути порожні')
 

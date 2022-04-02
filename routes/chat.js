@@ -8,7 +8,7 @@ import {
     renameRoomController,
     updateThumbController,
     sendMessageController,
-    getMessagesController, getRoomController
+    getMessagesController, getRoomController, editMessageController, deleteMessageController
 } from "../controllers/chatController.js"
 import auth from "../middleware/authMiddleware.js"
 
@@ -33,5 +33,9 @@ router.delete('/leaveRoom/:id', leaveRoomController)
 router.get('/:id/messages', getMessagesController)
 
 router.post('/:id/sendMessage', sendMessageController)
+
+router.put('/:id/editMessage/:msgId', editMessageController)
+
+router.delete('/:id/deleteMessage/:msgId', deleteMessageController)
 
 export default router

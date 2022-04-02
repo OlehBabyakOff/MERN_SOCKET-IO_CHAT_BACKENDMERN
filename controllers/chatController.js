@@ -4,7 +4,7 @@ import {
     deleteRoomService,
     joinRoomService,
     leaveRoomService,
-    renameRoomService, updateThumbService, sendMessageService, getMessagesService, getRoomService
+    renameRoomService, updateThumbService, sendMessageService, getMessagesService, getRoomService, editMessageService, deleteMessageService
 } from "../services/chatService.js"
 import {validateRefreshToken} from "../services/tokenService.js"
 
@@ -104,6 +104,29 @@ export const sendMessageController = async (req, res) => {
         const {id} = req.params
         const {text} = req.body
         const message = await sendMessageService(refreshToken, id, text)
+        return res.status(200).json(message)
+    } catch (e) {
+        res.status(400).json(e.message)
+    }
+}
+
+export const editMessageController = async (req, res) => {
+    try {
+        const {id, msgId} = req.params
+        const {refreshToken} = req.cookies
+        const {text} = req.body
+        const message = await editMessageService(id, msgId, refreshToken, text)
+        return res.status(200).json(message)
+    } catch (e) {
+        res.status(400).json(e.message)
+    }
+}
+
+export const deleteMessageController = async (req, res) => {
+    try {
+        const {id, msgId} = req.params
+        const {refreshToken} = req.cookies
+        const message = await deleteMessageService(id, msgId, refreshToken)
         return res.status(200).json(message)
     } catch (e) {
         res.status(400).json(e.message)
