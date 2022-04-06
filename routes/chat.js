@@ -8,7 +8,7 @@ import {
     renameRoomController,
     updateThumbController,
     sendMessageController,
-    getMessagesController, getRoomController, editMessageController, deleteMessageController
+    getMessagesController, getRoomController, editMessageController, deleteMessageController, getMessageController
 } from "../controllers/chatController.js"
 import auth from "../middleware/authMiddleware.js"
 
@@ -16,7 +16,7 @@ const router = new Router()
 
 // rooms routes
 
-router.get('/rooms', getRoomsController)
+router.get('/myRooms', getRoomsController)
 router.get('/:id/room', getRoomController)
 
 router.post('/createRoom', createRoomController)
@@ -31,6 +31,7 @@ router.delete('/leaveRoom/:id', leaveRoomController)
 // messages routes
 
 router.get('/:id/messages', getMessagesController)
+router.get('/:id/message/:msgId', getMessageController)
 
 router.post('/:id/sendMessage', sendMessageController)
 

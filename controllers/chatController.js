@@ -4,7 +4,7 @@ import {
     deleteRoomService,
     joinRoomService,
     leaveRoomService,
-    renameRoomService, updateThumbService, sendMessageService, getMessagesService, getRoomService, editMessageService, deleteMessageService
+    renameRoomService, updateThumbService, sendMessageService, getMessagesService, getRoomService, editMessageService, deleteMessageService, getMessageService
 } from "../services/chatService.js"
 import {validateRefreshToken} from "../services/tokenService.js"
 
@@ -69,8 +69,9 @@ export const updateThumbController = async (req, res) => {
 
 export const deleteRoomController = async (req, res) => {
     try {
+        const {refreshToken} = req.cookies
         const {id} = req.params
-        await deleteRoomService(id)
+        await deleteRoomService(id, refreshToken)
         return res.status(200).json('Кімнату видалено')
     } catch (e) {
         res.status(400).json(e.message)
@@ -79,7 +80,8 @@ export const deleteRoomController = async (req, res) => {
 
 export const getRoomsController = async (req, res) => {
     try {
-        const rooms = await getRoomsService()
+        const {refreshToken} = req.cookies
+        const rooms = await getRoomsService(refreshToken)
         res.status(200).json(rooms)
     } catch (e) {
         res.status(400).json(e.message)
@@ -138,6 +140,16 @@ export const getMessagesController = async (req, res) => {
         const {id} = req.params
         const messages = await getMessagesService(id)
         return res.status(200).json(messages)
+    } catch (e) {
+        res.status(400).json(e.message)
+    }
+}
+
+export const getMessageController = async (req, res) => {
+    try {
+        const {id, msgId} = req.params
+        const message = await getMessageService(id, msgId)
+        return res.status(200).json(message)
     } catch (e) {
         res.status(400).json(e.message)
     }

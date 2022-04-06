@@ -15,18 +15,18 @@ export const registrationService = async (email, username, password) => {
     const hashPassword = await bcrypt.hash(password, 6)
     const user = await UserSchema.create({email, username, password: hashPassword})
 
-    const userHash = {
+    const userData = {
         id: user._id,
         email: user.email,
         username
     }
 
-    const tokens = await generateToken(userHash)
+    const tokens = await generateToken(userData)
     await saveToken(user.id, tokens.refreshToken)
 
     return {
         ...tokens,
-        user: userHash
+        user: userData
     }
 }
 
@@ -39,18 +39,18 @@ export const loginService = async (username, password) => {
     const comparePass = await bcrypt.compare(password, user.password)
     if (!comparePass) throw new Error('Невірний пароль')
 
-    const userHash = {
+    const userData = {
         id: user._id,
         email: user.email,
         username
     }
 
-    const tokens = await generateToken(userHash)
+    const tokens = await generateToken(userData)
     await saveToken(user.id, tokens.refreshToken)
 
     return {
         ...tokens,
-        user: userHash
+        user: userData
     }
 }
 
@@ -64,7 +64,7 @@ export const refreshService = async (refreshToken) => {
     const userData = await validateRefreshToken(refreshToken)
     const tokenDB = await findToken(refreshToken)
     if (!userData || !tokenDB) throw new Error('Помилка авторизації')
-    const user = await UserSchema.findOne({userData})
+    const user = await UserSchema.findOne({_id: userData.id})
     const userHash = {
         id: user._id,
         email: user.email,

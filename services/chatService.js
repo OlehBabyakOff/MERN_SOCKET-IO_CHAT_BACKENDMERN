@@ -84,15 +84,36 @@ export const updateThumbService = async (thumb, roomId) => {
     return updatedRoom
 }
 
-export const deleteRoomService = async (id) => {
+export const deleteRoomService = async (id, refreshToken) => {
+    if (!refreshToken) throw new Error('Ви не авторизовані')
     if (!id) throw new Error('Введіть дані')
-    const room = await RoomSchema.findOneAndDelete({_id: id})
-    return room
+
+    const userData = await validateRefreshToken(refreshToken)
+    if (!userData) throw new Error('Користувача не знайдено')
+
+    const room = await RoomSchema.findOne({_id: id})
+    console.log(room)
+
+    if (room.admin.toString() !== userData.id) throw new Error('Ви не можете видалити чат, де ви не є адміністратором')
+
+    const deleteRoom = await RoomSchema.findOneAndDelete({_id: id})
+    return deleteRoom
 }
 
-export const getRoomsService = async () => {
+export const getRoomsService = async (refreshToken) => {
+    if (!refreshToken) throw new Error('Ви не авторизовані')
+
+    const userData = await validateRefreshToken(refreshToken)
+    if (!userData) throw new Error('Користувача не знайдено')
+
     const rooms = await RoomSchema.find()
-    return rooms
+    const memberRooms = []
+
+    rooms.forEach(room => {
+        const res = room.members.filter(user => user.id === userData.id)
+        if (res.length > 0) memberRooms.push(room)
+    })
+    return memberRooms
 }
 
 export const getRoomService = async (id) => {
@@ -154,4 +175,11 @@ export const getMessagesService = async (roomId) => {
 
     const messages = await MessageSchema.find({room: roomId})
     return messages
+}
+
+export const getMessageService = async (roomId, messageId) => {
+    if (!roomId && !messageId) throw new Error('Дані не можуть бути порожні')
+
+    const message = await MessageSchema.findOne({_id: messageId, room: roomId})
+    return message
 }
