@@ -1,14 +1,19 @@
 import {Router} from "express"
 import {
     createRoomController,
-    getRoomsController,
+    getMyRoomsController,
     deleteRoomController,
     joinRoomController,
     leaveRoomController,
     renameRoomController,
     updateThumbController,
     sendMessageController,
-    getMessagesController, getRoomController, editMessageController, deleteMessageController, getMessageController
+    getMessagesController,
+    getRoomController,
+    editMessageController,
+    deleteMessageController,
+    getMessageController,
+    getRoomsController
 } from "../controllers/chatController.js"
 import auth from "../middleware/authMiddleware.js"
 
@@ -16,7 +21,8 @@ const router = new Router()
 
 // rooms routes
 
-router.get('/myRooms', getRoomsController)
+router.get('/myRooms', getMyRoomsController)
+router.get('/rooms', getRoomsController)
 router.get('/:id/room', getRoomController)
 
 router.post('/createRoom', createRoomController)

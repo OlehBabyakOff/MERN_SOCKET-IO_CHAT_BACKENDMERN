@@ -5,12 +5,13 @@ import {
     logoutController,
     refreshController, updateUserController, updateAvatarController
 } from "../controllers/authController.js";
-import {getUserController} from "../controllers/userController.js";
+import {getUserByIdController, getUserController} from "../controllers/userController.js";
 import auth from "../middleware/authMiddleware.js";
 
 const router = new Router()
 
 router.get('/me', auth, getUserController)
+router.get('/user/:id', getUserByIdController)
 router.get('/refresh', refreshController)
 
 router.post('/registration', registrationController)

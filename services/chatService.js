@@ -92,7 +92,6 @@ export const deleteRoomService = async (id, refreshToken) => {
     if (!userData) throw new Error('Користувача не знайдено')
 
     const room = await RoomSchema.findOne({_id: id})
-    console.log(room)
 
     if (room.admin.toString() !== userData.id) throw new Error('Ви не можете видалити чат, де ви не є адміністратором')
 
@@ -100,7 +99,7 @@ export const deleteRoomService = async (id, refreshToken) => {
     return deleteRoom
 }
 
-export const getRoomsService = async (refreshToken) => {
+export const getMyRoomsService = async (refreshToken) => {
     if (!refreshToken) throw new Error('Ви не авторизовані')
 
     const userData = await validateRefreshToken(refreshToken)
@@ -114,6 +113,11 @@ export const getRoomsService = async (refreshToken) => {
         if (res.length > 0) memberRooms.push(room)
     })
     return memberRooms
+}
+
+export const getRoomsService = async () => {
+    const rooms = await RoomSchema.find()
+    return rooms
 }
 
 export const getRoomService = async (id) => {

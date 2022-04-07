@@ -1,5 +1,6 @@
 import {
     createRoomService,
+    getMyRoomsService,
     getRoomsService,
     deleteRoomService,
     joinRoomService,
@@ -78,10 +79,19 @@ export const deleteRoomController = async (req, res) => {
     }
 }
 
-export const getRoomsController = async (req, res) => {
+export const getMyRoomsController = async (req, res) => {
     try {
         const {refreshToken} = req.cookies
-        const rooms = await getRoomsService(refreshToken)
+        const rooms = await getMyRoomsService(refreshToken)
+        res.status(200).json(rooms)
+    } catch (e) {
+        res.status(400).json(e.message)
+    }
+}
+
+export const getRoomsController = async (req, res) => {
+    try {
+        const rooms = await getRoomsService()
         res.status(200).json(rooms)
     } catch (e) {
         res.status(400).json(e.message)
