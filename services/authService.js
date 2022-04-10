@@ -26,7 +26,7 @@ export const registrationService = async (email, username, password) => {
 
     return {
         ...tokens,
-        user: userData
+        user
     }
 }
 
@@ -50,7 +50,7 @@ export const loginService = async (username, password) => {
 
     return {
         ...tokens,
-        user: userData
+        user
     }
 }
 
@@ -76,7 +76,7 @@ export const refreshService = async (refreshToken) => {
 
     return {
         ...tokens,
-        user: userHash
+        user
     }
 }
 
@@ -85,7 +85,7 @@ export const updateUserService = async (refreshToken, email, username) => {
     const {id} = await validateRefreshToken(refreshToken)
     if (!id) throw new Error('Помилка авторизації')
 
-    const updatedUser = await UserSchema.updateOne({id}, {
+    const updatedUser = await UserSchema.updateOne({_id: id}, {
         email,
         username
     })
@@ -99,7 +99,7 @@ export const updateAvatarService = async (refreshToken, avatar) => {
     const {id} = await validateRefreshToken(refreshToken)
     if (!id) throw new Error('Помилка авторизації')
 
-    const updatedUser = await UserSchema.updateOne({id}, {
+    const updatedUser = await UserSchema.updateOne({_id: id}, {
         avatar
     })
 

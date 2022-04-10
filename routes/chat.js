@@ -13,7 +13,7 @@ import {
     editMessageController,
     deleteMessageController,
     getMessageController,
-    getRoomsController
+    getRoomsController, kickUserController
 } from "../controllers/chatController.js"
 import auth from "../middleware/authMiddleware.js"
 
@@ -33,6 +33,7 @@ router.put('/updateThumb/:id', updateThumbController)
 
 router.delete('/deleteRoom/:id', deleteRoomController)
 router.delete('/leaveRoom/:id', leaveRoomController)
+router.delete('/kickUser/:id/:userId', kickUserController)
 
 // messages routes
 

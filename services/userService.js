@@ -3,7 +3,10 @@ import UserSchema from "../models/User.js";
 
 export const getUserService = async (refreshToken) => {
     if (!refreshToken) throw new Error('Ви не авторизовані')
-    const user = await validateRefreshToken(refreshToken)
+    const {id} = await validateRefreshToken(refreshToken)
+
+    const user = await UserSchema.findById(id)
+
     return user
 }
 

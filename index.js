@@ -33,15 +33,21 @@ const io = new Server(server, {
 })
 
 io.on('connection', (socket) => {
-    console.log(`User ${socket.id} connected`)
+    // console.log(`User ${socket.id} connected`)
 
     socket.on('joinRoom', roomId => {
         socket.join(roomId)
-        console.log(`User ${socket.id} joined room ${roomId}`)
+        // console.log(`User ${socket.id} joined room ${roomId}`)
     })
 
     socket.on('sendMessage', data => {
         socket.to(data.room).emit('receiveMessage', data)
+    })
+
+    socket.on('sendLocation', (data) => {
+        io.emit('locationMessage', {
+            data
+        })
     })
 
     socket.on('leaveRoom', roomId => {
@@ -50,7 +56,7 @@ io.on('connection', (socket) => {
     })
 
     socket.on('disconnect', () => {
-        console.log(`User ${socket.id} disconnected`)
+        // console.log(`User ${socket.id} disconnected`)
     })
 })
 

@@ -28,7 +28,7 @@ export const joinRoomService = async (roomId, refreshToken) => {
     const room = await RoomSchema.findById(roomId)
     if (!room) throw new Error('Кімнати не існує')
 
-    const checkMember = room.members.find(member => member.id === user.id)
+    const checkMember = await room.members.find(member => member.id === user.id)
     if (checkMember) throw new Error(`Ви вже являєтесь учасником кімнати ${room.roomName}`)
 
     room.members.push(user.id)
@@ -46,10 +46,32 @@ export const leaveRoomService = async (roomId, refreshToken) => {
     const room = await RoomSchema.findById(roomId)
     if (!room) throw new Error('Кімнати не існує')
 
-    const checkMember = room.members.find(member => member.id === user.id)
+    const checkMember = await room.members.find(member => member.id === user.id)
     if (!checkMember) throw new Error(`Ви не являєтесь учасником кімнати ${room.roomName}`)
 
-    const updatedRoom = await RoomSchema.updateOne({roomId}, {
+    const updatedRoom = await RoomSchema.findOneAndUpdate({_id: roomId}, {
+        $pullAll: {
+            members: [{_id: user.id}]
+        }
+    })
+
+    return updatedRoom
+}
+
+export const kickUserService = async (roomId, userId) => {
+    if (!roomId) throw new Error('Кімнату не знайдено')
+    if (!userId) throw new Error('Користувача не знайдено')
+
+    const user = await UserSchema.findById(userId)
+    if (!user) throw new Error('Користувача не знайдено')
+
+    const room = await RoomSchema.findById(roomId)
+    if (!room) throw new Error('Кімнати не існує')
+
+    const checkMember = await room.members.find(member => member.id === user.id)
+    if (!checkMember) throw new Error(`Користувач не являєтесь учасником кімнати ${room.roomName}`)
+
+    const updatedRoom = await RoomSchema.updateOne({_id: roomId}, {
         $pullAll: {
             members: [{_id: user.id}]
         }
@@ -64,7 +86,7 @@ export const renameRoomService = async (roomName, roomId) => {
     const room = await RoomSchema.findById(roomId)
     if (!room) throw new Error('Кімнати не існує')
 
-    const updatedRoom = await RoomSchema.updateOne({roomId}, {
+    const updatedRoom = await RoomSchema.updateOne({_id: roomId}, {
         roomName
     })
 
@@ -77,7 +99,7 @@ export const updateThumbService = async (thumb, roomId) => {
     const room = await RoomSchema.findById(roomId)
     if (!room) throw new Error('Кімнати не існує')
 
-    const updatedRoom = await RoomSchema.updateOne({roomId}, {
+    const updatedRoom = await RoomSchema.updateOne({_id: roomId}, {
         thumb
     })
 
@@ -96,6 +118,7 @@ export const deleteRoomService = async (id, refreshToken) => {
     if (room.admin.toString() !== userData.id) throw new Error('Ви не можете видалити чат, де ви не є адміністратором')
 
     const deleteRoom = await RoomSchema.findOneAndDelete({_id: id})
+
     return deleteRoom
 }
 
@@ -122,6 +145,16 @@ export const getRoomsService = async () => {
 
 export const getRoomService = async (id) => {
     const room = await RoomSchema.findById(id)
+    // let users = []
+    // for (const member of room.members) {
+    //     users = [...users, await UserSchema.find({_id: member._id})]
+    // }
+    //
+    // return {
+    //     room,
+    //     users
+    // }
+
     return room
 }
 

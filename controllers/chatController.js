@@ -5,7 +5,15 @@ import {
     deleteRoomService,
     joinRoomService,
     leaveRoomService,
-    renameRoomService, updateThumbService, sendMessageService, getMessagesService, getRoomService, editMessageService, deleteMessageService, getMessageService
+    renameRoomService,
+    updateThumbService,
+    sendMessageService,
+    getMessagesService,
+    getRoomService,
+    editMessageService,
+    deleteMessageService,
+    getMessageService,
+    kickUserService
 } from "../services/chatService.js"
 import {validateRefreshToken} from "../services/tokenService.js"
 
@@ -79,6 +87,16 @@ export const deleteRoomController = async (req, res) => {
     }
 }
 
+export const kickUserController = async (req, res) => {
+    try {
+        const {id, userId} = req.params
+        await kickUserService(id, userId)
+        return res.status(200).json('Користувача видалено з чату')
+    } catch (e) {
+        res.status(400).json(e.message)
+    }
+}
+
 export const getMyRoomsController = async (req, res) => {
     try {
         const {refreshToken} = req.cookies
@@ -101,6 +119,8 @@ export const getRoomsController = async (req, res) => {
 export const getRoomController = async (req, res) => {
     try {
         const {id} = req.params
+        // const {room, users} = await getRoomService(id)
+        // res.status(200).json({room, users})
         const room = await getRoomService(id)
         res.status(200).json(room)
     } catch (e) {

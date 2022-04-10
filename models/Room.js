@@ -13,7 +13,8 @@ const RoomSchema = new Schema({
         require: true
     },
     thumb: {
-        type: Buffer
+        data: Buffer,
+        contentType: String
     },
     members: [{
         user: {
