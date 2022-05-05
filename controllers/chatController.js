@@ -135,7 +135,8 @@ export const sendMessageController = async (req, res) => {
         const {refreshToken} = req.cookies
         const {id} = req.params
         const {text} = req.body
-        const message = await sendMessageService(refreshToken, id, text)
+        const image = req?.files?.image
+        const message = await sendMessageService(refreshToken, id, text, image)
         return res.status(200).json(message)
     } catch (e) {
         res.status(400).json(e.message)

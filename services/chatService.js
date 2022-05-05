@@ -160,14 +160,20 @@ export const getRoomService = async (id) => {
 
 // messages services
 
-export const sendMessageService = async (refreshToken, roomId, text) => {
+export const sendMessageService = async (refreshToken, roomId, text, image) => {
     if (!refreshToken) throw new Error('Токен не існує')
-    if (!roomId && !text) throw new Error('Дані не можуть бути порожні')
+    if (!roomId) throw new Error('Кімнати не існує')
+    if (!text && !image) throw new Error('Дані не можуть бути порожні')
 
     const {id} = await validateRefreshToken(refreshToken)
     if (!id) throw new Error('Помилка авторизації')
 
     const message = await MessageSchema.create({room: roomId, user: id, text, createdAt: new Date()})
+    if (image) {
+        await MessageSchema.updateOne({_id: message._id}, {
+            image: image.data
+        })
+    }
     return message
 }
 

@@ -6,8 +6,12 @@ export const getUserService = async (refreshToken) => {
     const {id} = await validateRefreshToken(refreshToken)
 
     const user = await UserSchema.findById(id)
-
     return user
+}
+
+export const getUsersService = async () => {
+    const users = await UserSchema.find()
+    return users
 }
 
 export const getUserByIdService = async (id) => {

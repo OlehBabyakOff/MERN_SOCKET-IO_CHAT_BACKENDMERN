@@ -13,8 +13,11 @@ const MessageSchema = new Schema({
         require: true
     },
     text: {
-        type: String,
-        require: true
+        type: String
+    },
+    image: {
+        data: Buffer,
+        contentType: String
     },
     createdAt: {
         type: Date,

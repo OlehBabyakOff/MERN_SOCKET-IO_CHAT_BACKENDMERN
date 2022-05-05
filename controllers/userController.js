@@ -1,10 +1,19 @@
-import {getUserByIdService, getUserService} from "../services/userService.js"
+import {getUserByIdService, getUserService, getUsersService} from "../services/userService.js"
 
 export const getUserController = async (req, res) => {
     try {
         const {refreshToken} = req.cookies
         const user = await getUserService(refreshToken)
         return res.status(201).json(user)
+    } catch (e) {
+        res.status(401).json(e.message)
+    }
+}
+
+export const getUsersController = async (req, res) => {
+    try {
+        const users = await getUsersService()
+        return res.status(201).json(users)
     } catch (e) {
         res.status(401).json(e.message)
     }
