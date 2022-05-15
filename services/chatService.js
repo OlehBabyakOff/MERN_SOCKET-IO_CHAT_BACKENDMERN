@@ -174,7 +174,8 @@ export const sendMessageService = async (refreshToken, roomId, text, image) => {
             image: image.data
         })
     }
-    return message
+    const msg = await MessageSchema.findOne({_id: message._id})
+    return msg
 }
 
 export const editMessageService = async (roomId, messageId, refreshToken, text) => {

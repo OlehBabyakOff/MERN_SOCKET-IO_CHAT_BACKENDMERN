@@ -43,11 +43,11 @@ io.on('connection', (socket) => {
     })
 
     socket.on('sendMessage', data => {
-        socket.to(data.room).emit('receiveMessage', data)
+        socket.broadcast.to(data.room).emit('receiveMessage', data)
     })
 
     socket.on('sendLocation', data => {
-        io.emit('locationMessage', data)
+        socket.broadcast.to(data.room).emit('locationMessage', data)
     })
 
     socket.on('leaveRoom', data => {

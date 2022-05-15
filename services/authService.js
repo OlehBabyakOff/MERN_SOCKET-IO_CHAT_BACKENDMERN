@@ -2,7 +2,6 @@ import UserSchema from "../models/User.js"
 import bcrypt from 'bcrypt'
 
 import {generateToken, saveToken, removeToken, validateRefreshToken, findToken} from './tokenService.js'
-import User from "../models/User.js";
 
 export const registrationService = async (email, username, password) => {
     if (!email && !username && !password) throw new Error('Дані не можуть бути порожніми')
@@ -31,7 +30,8 @@ export const registrationService = async (email, username, password) => {
 }
 
 export const loginService = async (username, password) => {
-    if (!username && !password) throw new Error('Дані не можуть бути порожніми')
+    if (!username) throw new Error('Ім`я користувача не може бути порожнім')
+    if (!password) throw new Error('Пароль не може бути порожнім')
 
     const user = await UserSchema.findOne({username})
     if (!user) throw new Error('Користувача не знайдено')
